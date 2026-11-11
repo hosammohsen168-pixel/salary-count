@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>حاسبة الراتب الحقيقي للمروج والمنسق</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Cairo',sans-serif;
+}
+
+body{
+background:#f4f7fb;
+padding:20px;
+}
+
+.container{
+max-width:900px;
+margin:auto;
+}
+
+.hero{
+background:linear-gradient(135deg,#0B5ED7,#1E88E5);
+color:white;
+padding:35px;
+border-radius:20px;
+margin-bottom:20px;
+box-shadow:0 10px 25px rgba(0,0,0,.15);
+}
+
+.hero h1{
+font-size:32px;
+margin-bottom:10px;
+}
+
+.hero p{
+font-size:18px;
+line-height:1.8;
+}
+
+.card{
+background:white;
+padding:25px;
+border-radius:20px;
+margin-bottom:20px;
+box-shadow:0 5px 15px rgba(0,0,0,.08);
+}
+
+.card h2{
+color:#0B5ED7;
+margin-bottom:20px;
+}
+
+.input-group{
+margin-bottom:15px;
+}
+
+label{
+display:block;
+margin-bottom:8px;
+font-weight:700;
+}
+
+input{
+width:100%;
+padding:12px;
+border:1px solid #ddd;
+border-radius:10px;
+font-size:16px;
+}
+
+button{
+width:100%;
+padding:15px;
+border:none;
+border-radius:12px;
+background:#0B5ED7;
+color:white;
+font-size:18px;
+font-weight:bold;
+cursor:pointer;
+transition:.3s;
+}
+
+button:hover{
+background:#0048b3;
+}
+
+.results{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+gap:15px;
+margin-top:20px;
+}
+
+.result-box{
+padding:20px;
+border-radius:15px;
+color:white;
+text-align:center;
+}
+
+.blue{
+background:#0B5ED7;
+}
+
+.green{
+background:#198754;
+}
+
+.orange{
+background:#fd7e14;
+}
+
+.red{
+background:#dc3545;
+}
+
+.result-box h3{
+font-size:18px;
+margin-bottom:10px;
+}
+
+.result-box span{
+font-size:28px;
+font-weight:bold;
+}
+
+.status{
+margin-top:25px;
+padding:20px;
+border-radius:15px;
+font-size:20px;
+font-weight:bold;
+text-align:center;
+}
+
+.good{
+background:#d1e7dd;
+color:#0f5132;
+}
+
+.medium{
+background:#fff3cd;
+color:#664d03;
+}
+
+.bad{
+background:#f8d7da;
+color:#842029;
+}
+
+.footer{
+margin-top:30px;
+text-align:center;
+}
+
+.footer a{
+background:#0B5ED7;
+color:white;
+text-decoration:none;
+padding:12px 25px;
+border-radius:10px;
+display:inline-block;
+}
+
+</style>
+</head>
+<body>
+
+<div class="container">
+
+<div class="hero">
+
+<h1>💰 حاسبة الراتب الحقيقي</h1>
+
+<p>
+لا تقبل أي وظيفة قبل حساب صافي دخلك الحقيقي وقيمة ساعة العمل.
+</p>
+
+</div>
+
+<div class="card">
+
+<h2>بيانات الوظيفة</h2>
+
+<div class="input-group">
+<label>الراتب الشهري (جنيه)</label>
+<input type="number" id="salary">
+</div>
+
+<div class="input-group">
+<label>إجمالي المواصلات الشهرية</label>
+<input type="number" id="transport">
+</div>
+
+<div class="input-group">
+<label>مصروفات إضافية شهرية</label>
+<input type="number" id="expenses">
+</div>
+
+<div class="input-group">
+<label>عدد ساعات العمل اليومية</label>
+<input type="number" id="hours">
+</div>
+
+<div class="input-group">
+<label>عدد أيام العمل شهرياً</label>
+<input type="number" id="days">
+</div>
+
+<div class="input-group">
+<label>متوسط العمولة الشهرية</label>
+<input type="number" id="commission">
+</div>
+
+<button onclick="calculate()">
+احسب الآن
+</button>
+
+</div>
+
+<div class="card">
+
+<h2>نتائج الحاسبة</h2>
+
+<div class="results">
+
+<div class="result-box blue">
+<h3>صافي الدخل الحقيقي</h3>
+<span id="netIncome">0</span>
+</div>
+
+<div class="result-box green">
+<h3>إجمالي الساعات</h3>
+<span id="totalHours">0</span>
+</div>
+
+<div class="result-box orange">
+<h3>قيمة الساعة</h3>
+<span id="hourRate">0</span>
+</div>
+
+<div class="result-box red">
+<h3>الدخل مع العمولة</h3>
+<span id="fullIncome">0</span>
+</div>
+
+</div>
+
+<div id="status" class="status good">
+أدخل البيانات ثم اضغط احسب
+</div>
+
+</div>
+
+<div class="footer">
+
+<a href="#">
+📢 انضم لقناة الوظائف
+</a>
+
+</div>
+
+</div>
+
+<script>
+
+function calculate(){
+
+let salary =
+parseFloat(document.getElementById("salary").value) || 0;
+
+let transport =
+parseFloat(document.getElementById("transport").value) || 0;
+
+let expenses =
+parseFloat(document.getElementById("expenses").value) || 0;
+
+let hours =
+parseFloat(document.getElementById("hours").value) || 0;
+
+let days =
+parseFloat(document.getElementById("days").value) || 0;
+
+let commission =
+parseFloat(document.getElementById("commission").value) || 0;
+
+let netIncome =
+salary - transport - expenses;
+
+let totalHours =
+hours * days;
+
+let hourRate =
+totalHours > 0
+? netIncome / totalHours
+: 0;
+
+let fullIncome =
+netIncome + commission;
+
+document.getElementById("netIncome").innerHTML =
+netIncome.toFixed(0)+" ج";
+
+document.getElementById("totalHours").innerHTML =
+totalHours.toFixed(0);
+
+document.getElementById("hourRate").innerHTML =
+hourRate.toFixed(2)+" ج";
+
+document.getElementById("fullIncome").innerHTML =
+fullIncome.toFixed(0)+" ج";
+
+let status =
+document.getElementById("status");
+
+if(hourRate >= 35){
+
+status.className="status good";
+
+status.innerHTML=
+"✅ عرض ممتاز ويستحق الدراسة";
+
+}
+
+else if(hourRate >= 20){
+
+status.className="status medium";
+
+status.innerHTML=
+"⚠️ عرض متوسط - راجع التفاصيل جيداً";
+
+}
+
+else{
+
+status.className="status bad";
+
+status.innerHTML=
+"❌ غالباً الوظيفة غير مجدية مالياً";
+
+}
+
+}
+
+</script>
+
+</body>
+</html>
